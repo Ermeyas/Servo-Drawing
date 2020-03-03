@@ -1,0 +1,157 @@
+import processing.serial.*;
+
+import cc.arduino.*;
+
+Arduino arduino;
+
+import ddf.minim.*;
+
+Minim minim; AudioPlayer player;
+
+int t=0;
+
+int nn=0, d=0, p=0;
+
+int prevX=mouseX, prevY=mouseY;
+
+float x,y,m,atx=0, a=0;
+
+void setup()
+
+{
+
+minim = new Minim(this);
+
+player = minim.loadFile("Kenny G - Miracles The Holiday Album - 04 - Silent Night .mp3"); // instead of this music file, you can load your own by writing the file name and putting the music file in the processing sketch folder
+
+size(800, 800); // change the size of the screen where you draw background(255);
+
+println(Arduino.list());
+
+arduino = new Arduino(this, Arduino.list()[0], 57600); //Modify this line, by changing the "0" to the index of the serial port corresponding to your Arduino board (as it appears in the list printed in the black screen at the bottom).
+
+arduino.pinMode(4, Arduino.SERVO); // change the pin number if you want to attach the servo to another one }
+
+void draw()
+
+{
+
+if(mousePressed)
+
+{
+
+stroke(0);
+
+strokeWeight(10);
+
+smooth();
+
+nn++;
+
+if (nn==10) {
+
+line(prevX, prevY, mouseX, mouseY);
+
+x = (mouseX-prevX);
+
+y = (mouseY-prevY);
+
+if (x!=0)
+
+{
+
+m = -y / x;
+
+}
+
+else{ }
+
+atx=57.27*atan(m);
+
+if((x<0 && y<0) || (x>0 && y>0))
+
+{
+
+d=abs(round(atx));
+
+} if((x>0 && y<0) || (x<0 && y>0))
+
+{
+
+d=180-abs(round(atx));
+
+}
+
+arduino.servoWrite(4,d ); //Write a value to the servos, telling them to go to the corresponding angle (for standard servos)
+
+println(d); nn = 0;
+
+prevX=mouseX; prevY=mouseY;
+
+}}
+
+else
+
+{
+
+color a = get(mouseX, mouseY);
+
+if(color(a)==color(0))
+
+{
+
+java.awt.Toolkit.getDefaultToolkit().beep();;
+
+delay(15);
+
+p++;
+
+if(p==2)
+
+{
+
+x = (mouseX-prevX);
+
+y = (mouseY-prevY);
+
+if (x!=0) { m = -y / x;
+
+}
+
+else
+
+{ }
+
+atx=57.27*atan(m);
+
+if((x<0 && y<0) || (x>0 && y>0))
+
+{
+
+d=abs(round(atx));
+
+}
+
+if((x>0 && y<0) || (x<0 && y>0))
+
+{
+
+d=180-abs(round(atx));
+
+}
+
+arduino.servoWrite(4,d );
+
+println(d); p=0;
+
+prevX=mouseX;
+
+prevY=mouseY;}}
+
+else {}
+
+prevX=mouseX; prevY=mouseY;
+
+}
+
+}
